@@ -1,0 +1,90 @@
+pool:
+
+  name: Hosted VS2017
+
+steps:
+
+- task: NodeTool@0
+
+  displayName: 'Use Node 10.16.3'
+
+  inputs:
+
+    versionSpec: 10.16.3
+
+
+
+- task: Npm@1
+
+  displayName: 'npm install'
+
+  inputs:
+
+    verbose: false
+
+
+
+- task: Npm@1
+
+  displayName: 'npm lint'
+
+  inputs:
+
+    command: custom
+
+    verbose: false
+
+    customCommand: 'run-script lint'
+
+
+
+- task: Npm@1
+
+  displayName: 'npm Build'
+
+  inputs:
+
+    command: custom
+
+    verbose: false
+
+    customCommand: 'run-script build '
+
+
+
+- task: Npm@1
+
+  displayName: 'npm custom'
+
+  inputs:
+
+    command: custom
+
+    verbose: false
+
+    customCommand: 'run-script post-build'
+
+
+
+- task: ArchiveFiles@2
+
+  displayName: 'Archive dist'
+
+  inputs:
+
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/prod-dist/**'
+
+    archiveFile: '$(System.DefaultWorkingDirectory)/prod-dist/$(Build.BuildId).zip'
+
+
+
+- task: PublishBuildArtifacts@1
+
+  displayName: 'Publish Artifact: drop'
+
+  inputs:
+
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/prod-dist'
+
+
+
